@@ -1,0 +1,32 @@
+name: Auto Commit - Daily Contribution Bot
+
+on:
+  schedule:
+    # Chạy tự động mỗi 6 tiếng một lần (4 lần/ngày) để giữ chấm xanh đều đặn
+    - cron: '0 */6 * * *'
+  workflow_dispatch: # Cho phép kích hoạt chạy tay từ tab Actions của GitHub
+
+permissions:
+  contents: write
+
+jobs:
+  auto-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Commit in a loop to ensure dark green shade
+        run: |
+          git config --global user.name "cavoixanh1806"
+          git config --global user.email "186cvx@gmail.com"
+          
+          # Lặp 25 lần để tạo 25 commit riêng biệt mỗi lần chạy, giúp chấm có màu XANH ĐẬM (darkest green)
+          for i in {1..25}
+          do
+            echo "Automated commit $i: $(date)" > daily_activity.txt
+            git add daily_activity.txt
+            git commit -m "chore: automated activity log $i [skip ci]"
+          done
+          
+          git push
